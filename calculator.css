@@ -32,8 +32,7 @@ body {
 .result {
   color: white;
   font-size: 5rem;
-  padding-bottom: 5%;
-  padding-right: 5%;
+  padding: 0 5% 5%;
 }
 
 .buttons {

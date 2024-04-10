@@ -60,9 +60,10 @@ window.onload = function() {
     function handleOperator(value, button) {
         resetActiveOperatorButton();
         if (currentInput) equation.push(currentInput);
-        equation.push(value);
         currentInput = '';
-
+        if (['+', '-', 'x', '÷'].includes(equation.at(-1))) equation.pop();
+        if (equation.length>1&&((value=='+'||value=='-')||!(equation.includes('+')||equation.includes('-')))) performCalculation(partial = true);
+        equation.push(value);
         button.classList.add('operator-active');
         activeOperatorButton = button;
     }
@@ -73,7 +74,7 @@ window.onload = function() {
         updateDisplay(currentInput);
     }
 
-    function performCalculation() {
+    function performCalculation(partial = false) {
         resetActiveOperatorButton();
         if (currentInput) equation.push(currentInput);
         const calculationString = equation.join(' ')
@@ -82,8 +83,10 @@ window.onload = function() {
         try {
             const result = new Function('return ' + calculationString)();
             if (!isFinite(result)) throw new Error('Divide by zero error.');
-            currentInput = result.toString();
-            equation = [];
+            if (!partial) {
+                currentInput = result.toString();
+                equation = [];
+            }
             updateDisplay(result);
         } catch (e) {
             updateDisplay('Error');
@@ -93,7 +96,7 @@ window.onload = function() {
     }
 
     function updateDisplay(value) {
-        display.textContent = value;
+        display.textContent = Intl.NumberFormat('en-US').format(value);
     }
 
     function resetActiveOperatorButton() {
